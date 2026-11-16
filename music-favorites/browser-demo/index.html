@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Music Favorites</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f9f3f6;color:#2e2030;font:16px system-ui,sans-serif}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #87448f;outline-offset:3px}.shell{max-width:1140px;margin:auto;padding:0 28px 60px}header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 0}.brand{font-weight:850;letter-spacing:-.04em;font-size:23px}.brand b{display:inline-grid;place-items:center;background:#40263f;color:#fff;border-radius:12px;width:38px;height:38px;margin-right:9px}.badge,.eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.badge{background:#efe1ee;padding:9px 13px;border-radius:99px}.hero{position:relative;overflow:hidden;border-radius:29px;background:linear-gradient(125deg,#f4d4e2,#ecd9f7 72%);padding:40px;min-height:246px}.hero>div:first-child{position:relative;z-index:1;max-width:65%}h1,h2{font-family:Georgia,serif;letter-spacing:-.05em}h1{font-size:clamp(36px,6vw,70px);line-height:1;margin:11px 0}p{line-height:1.5}.hero p{margin:0 0 19px}.primary{border:0;border-radius:99px;background:#40263f;color:white;padding:10px 17px}.vinyl{position:absolute;right:8%;top:4%;width:230px;aspect-ratio:1;border-radius:50%;transform:rotate(-16deg);background:repeating-radial-gradient(circle,#452d48 0 4px,#553955 5px 7px);border:8px solid #442944;box-shadow:13px 13px 0 #b779a348;display:grid;place-items:center}.vinyl span{display:grid;place-items:center;width:40%;aspect-ratio:1;background:#f5afcc;border-radius:50%;font-size:40px}.toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin-top:28px}nav,.filters{display:flex;gap:7px;flex-wrap:wrap}.pill,.search{border:1px solid #e4d5e2;border-radius:99px;background:#fff;padding:9px 14px;color:inherit}.pill[aria-pressed=true]{background:#40263f;color:white;border-color:#40263f}.search{width:min(100%,290px)}.section{display:flex;align-items:baseline;gap:13px}h2{font-size:35px;margin:24px 0 12px}.muted{color:#69566a;font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px}.card{background:white;border:1px solid #eadde8;border-radius:18px;padding:10px;min-width:0}.art{height:90px;position:relative;overflow:hidden;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;font:55px Georgia;color:#40263f}.art:before,.art:after{content:"";position:absolute;border:1px solid #fff9;border-radius:50%;width:160px;height:160px;right:-40px;top:-50px}.art:after{width:110px;height:110px;left:-25px;top:43px}.detail{padding:12px 4px 3px;display:flex;align-items:center;justify-content:space-between;gap:4px}.detail strong,.detail small{display:block}.detail small{color:#69566a;margin-top:3px}.heart{flex:none;width:39px;height:39px;border:1px solid #eadde8;background:#fff5fa;color:#792d60;border-radius:50%;font-size:23px}.heart[aria-pressed=true]{background:#f4cce2}.empty{grid-column:1/-1;background:white;border-radius:16px;padding:22px}.status{min-height:24px;margin:13px 0 0}.foot{margin-top:24px}@media(max-width:630px){.shell{padding:0 16px 35px}.hero{padding:25px}.vinyl{width:125px;right:-23px;top:32px;opacity:.75}.hero>div:first-child{max-width:78%}.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
+</style>
+<div class="shell"><header><span class="brand"><b aria-hidden="true">♫</b> Music Favorites</span><span class="badge">Studio demo</span></header>
+<main><section class="hero"><div><span class="eyebrow">Your personal record shelf</span><h1>Keep what<br> you love.</h1><p>Find a song, tap the heart, and make it part of your collection.</p><button class="primary" id="open">Open my favorites →</button></div><div class="vinyl" aria-hidden="true"><span>✿</span></div></section>
+<div class="toolbar"><nav aria-label="Library views"><button class="pill" id="catalog" aria-pressed="true">Discover</button><button class="pill" id="favorites" aria-pressed="false">My Favorites <span id="saved">0</span></button></nav><input class="search" id="search" type="search" aria-label="Search by song or artist" placeholder="Search songs or artists"></div>
+<div class="section"><h2 id="heading">Discover</h2><span class="muted" id="count"></span></div><div class="filters" id="filters" aria-label="Filter by genre"></div><p class="status muted" id="status" role="status"></p><div class="grid" id="grid"></div>
+<p class="foot muted">Fictional song catalog · Favorites are saved on this computer.</p></main></div>
+<script>
+const $=id=>document.getElementById(id);
+let songs=[],view='catalog',genre='All genres',loaded=false,busy=false;
+const genres=['All genres','R&B','Indie','Hip-hop','Pop'];
+const palettes=[['#fac9da','#f1a4c5','✿'],['#d9c7f1','#c2a6ed','✧'],['#ffe2be','#f5bc9f','☾'],['#cfebd7','#a9d3c2','♫']];
+function switchView(next){view=next;genre=genres[0];$('search').value='';$('status').textContent='';draw()}
+for(const id of ['catalog','favorites'])$(id).onclick=()=>switchView(id);
+$('open').onclick=()=>{switchView('favorites');$('favorites').focus()};
+$('search').oninput=draw;
+function draw(){
+ for(const id of ['catalog','favorites'])$(id).setAttribute('aria-pressed',String(view===id));
+ $('heading').textContent=view==='catalog'?'Discover':'My Favorites';
+ $('saved').textContent=songs.filter(s=>s.saved).length;
+ const q=$('search').value.trim().toLowerCase();
+ const matches=songs.filter(s=>(view==='catalog'||s.saved)&&(genre===genres[0]||s.genre===genre)&&[s.title,s.artist].some(v=>v.toLowerCase().includes(q)));
+ $('count').textContent=loaded?matches.length+(matches.length===1?' song':' songs'):'';
+ $('filters').replaceChildren(...genres.map(g=>{
+  const b=document.createElement('button');b.className='pill';b.textContent=g;
+  b.setAttribute('aria-pressed',String(g===genre));b.onclick=()=>{genre=g;draw();[...$('filters').children].find(x=>x.textContent===g).focus()};return b
+ }));
+ $('grid').replaceChildren();
+ if(!matches.length){const p=document.createElement('p');p.className='empty';p.textContent=!loaded?'Loading the catalog…':q||genre!==genres[0]?'No songs match these filters.':view==='favorites'?'No favorites yet. Tap a heart in Discover to save a song.':'No songs available.';$('grid').append(p)}
+ for(const s of matches){
+  const [a,b,symbol]=palettes[(s.id-1)%palettes.length];
+  const card=document.createElement('article');card.className='card';
+  card.innerHTML='<div class="art" aria-hidden="true"></div><div class="detail"><div><strong></strong><small></small></div><button class="heart"></button></div>';
+  const art=card.querySelector('.art');art.style.setProperty('--a',a);art.style.setProperty('--b',b);art.textContent=symbol;
+  card.querySelector('strong').textContent=s.title;
+  card.querySelector('small').textContent=s.artist+' · '+s.genre;
+  const heart=card.querySelector('button');heart.dataset.song=s.id;
+  heart.textContent=s.saved?'♥':'♡';heart.setAttribute('aria-pressed',String(s.saved));heart.setAttribute('aria-label','Favorite '+s.title);
+  heart.onclick=async()=>{
+    if(busy)return;
+    busy=true;
+    try{
+      const r=await fetch('/api/favorites/'+s.id,{method:s.saved?'DELETE':'POST'});
+      if(!r.ok)throw Error();
+      s.saved=(await r.json()).saved;
+      $('status').textContent=s.saved?'Saved '+s.title+'.':'Removed '+s.title+'.';
+      draw();
+      (document.querySelector('[data-song="'+s.id+'"]')||$(view)).focus();
+    }catch{$('status').textContent='Could not update favorites. Try again.'}finally{busy=false}
+  };
+  $('grid').append(card)
+ }
+}
+draw();
+fetch('/api/songs').then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{songs=data;loaded=true;draw()}).catch(()=>{
+ $('status').textContent='Could not load songs. Check that the Python server is running and reload.';
+ $('grid').replaceChildren();
+});
+</script></html>
