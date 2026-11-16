@@ -5,12 +5,22 @@ import json, sqlite3, re
 ROOT = Path(__file__).resolve().parent
 DB = ROOT / 'browser_favorites.sqlite3'
 SONGS = [
-("Pink Skies","Mila Rose","R&B"),("After Hours","Juno Blue","R&B"),
-("Soft Focus","The Sunday Club","Indie"),("Late Checkout","Noah Saint","Hip-hop"),
-("Peach Fuzz","Lola Bloom","Pop"),("Velvet Drive","Miles Indigo","R&B"),
-("Satellite Hearts","June Arcade","Pop"),("Window Seat","City Static","Indie"),
-("Golden Hour","Nia Soleil","R&B"),("Night Shift","Eastside Eli","Hip-hop"),
-("Slow Motion","The Sunday Club","Indie"),("Daydream Radio","Lola Bloom","Pop")]
+    ("Snooze", "SZA", "R&B"),
+    ("Damage", "H.E.R.", "R&B"),
+    ("On & On", "Erykah Badu", "Old School R&B"),
+    ("Weak", "SWV", "Old School R&B"),
+    ("Can We Talk", "Tevin Campbell", "Old School R&B"),
+    ("Get You", "Daniel Caesar feat. Kali Uchis", "R&B"),
+    ("Alright", "Kendrick Lamar", "Hip-Hop/Rap"),
+    ("Work It", "Missy Elliott", "Hip-Hop/Rap"),
+    ("Ms. Jackson", "Outkast", "Hip-Hop/Rap"),
+    ("Levitating", "Dua Lipa", "Pop"),
+    ("Espresso", "Sabrina Carpenter", "Pop"),
+    ("Style", "Taylor Swift", "Pop"),
+    ("Dreams", "Fleetwood Mac", "Rock"),
+    ("Everlong", "Foo Fighters", "Rock"),
+    ("Misery Business", "Paramore", "Rock"),
+]
 def query(sql, args=()):
     with sqlite3.connect(DB) as db:
         return db.execute(sql,args).fetchall()

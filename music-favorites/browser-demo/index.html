@@ -10,7 +10,7 @@
 <script>
 const $=id=>document.getElementById(id);
 let songs=[],view='catalog',genre='All genres',loaded=false,busy=false;
-const genres=['All genres','R&B','Indie','Hip-hop','Pop'];
+const genres = ['All genres', 'Hip-Hop/Rap', 'Pop', 'R&B', 'Old School R&B', 'Rock'];
 const palettes=[['#fac9da','#f1a4c5','✿'],['#d9c7f1','#c2a6ed','✧'],['#ffe2be','#f5bc9f','☾'],['#cfebd7','#a9d3c2','♫']];
 function switchView(next){view=next;genre=genres[0];$('search').value='';$('status').textContent='';draw()}
 for(const id of ['catalog','favorites'])$(id).onclick=()=>switchView(id);
